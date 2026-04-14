@@ -2,7 +2,8 @@ name: CI-CD Pipeline
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
   deploy:
@@ -10,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.3
@@ -19,12 +20,9 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_KEY }}
           script: |
-              cd node-docker-app || git clone https://github.com/sukhshant-devops/node-docker-app.git node-docker-app
-              cd node-docker-app
-             git pull
-
-              docker build -t node-app .
-
-              docker rm -f app || true
-
-              docker run -d -p 3000:3000 --name app node-app
+            cd node-docker-app || git clone https://github.com/sukhshant-devops/node-docker-app.git node-docker-app
+            cd node-docker-app
+            git pull
+            docker build -t node-app .
+            docker rm -f app || true
+            docker run -d -p 3000:3000 --name app node-app
